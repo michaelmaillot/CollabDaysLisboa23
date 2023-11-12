@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "react-hello-m-365-client-side-solution",
+    "id": "f82e0966-59ce-4142-aa40-9d17996c31a9",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.18.1"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "react-hello-m-365 description"
+      },
+      "longDescription": {
+        "default": "react-hello-m-365 description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "react-hello-m-365 Feature",
+        "description": "The feature that activates elements of the react-hello-m-365 solution.",
+        "id": "c9ffc75f-a709-488a-8470-b4d613a1ad0a",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/react-hello-m-365.sppkg"
+  }
+}

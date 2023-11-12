@@ -1,0 +1,18 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/config.2.0.schema.json",
+  "version": "2.0",
+  "bundles": {
+    "hello-m-365-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/helloM365/HelloM365WebPart.js",
+          "manifest": "./src/webparts/helloM365/HelloM365WebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "HelloM365WebPartStrings": "lib/webparts/helloM365/loc/{locale}.js"
+  }
+}
