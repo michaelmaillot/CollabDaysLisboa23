@@ -106,8 +106,8 @@ test.afterAll(async () => {
 function waitForSPOHostingPageResponse(): Promise<Response> {
 
   return page.waitForResponse(response =>
-    (response.url().indexOf('.sharepoint.com/sites/app/ClientSideAssets/') > 0
-      || response.url().indexOf('localhost:4321/dist') > 0)
+    (response.url().includes('.sharepoint.com/sites/app/ClientSideAssets/')
+      || response.url().includes('localhost:4321/dist'))
     && response.status() === 200
   );
 }
