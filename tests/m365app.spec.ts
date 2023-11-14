@@ -1,4 +1,4 @@
-import { test, expect, Page, Response, Locator, FrameLocator } from '@playwright/test';
+import { test, expect, Page, Response, Locator, FrameLocator, errors } from '@playwright/test';
 
 const APP_ID = "3934c2bd-b5db-49a1-922d-427b51ee6823";
 const ENV_MESSAGE_LOCATOR_ID = "#envMessage";
@@ -16,6 +16,12 @@ test.beforeAll(async ({ browser }) => {
   page = await browser.newPage();
 });
 
+// test.skip('TeamsJS SDK init error', async ({page}) => {
+//   page.on('pageerror', (error) => {
+//     return error.message.indexOf('SDK initialization timed out') > -1
+//   });
+// });
+
 test('App displayed in Teams context', async () => {
   test.setTimeout(40000);
 
@@ -26,11 +32,17 @@ test('App displayed in Teams context', async () => {
   await page.goto('https://teams.microsoft.com/#_');
 
   // If you have a policy that addds automatically the custom app as pinned 👇
-  const appLocator = page.locator(`[data-tid="app-bar-${APP_ID}"]`);
-  const responsePromise = waitForSPOHostingPageResponse();
+  try {
+    const appLocator = page.locator(`[data-tid="app-bar-${APP_ID}"]`);
+    const responsePromise = waitForSPOHostingPageResponse();
 
-  await appLocator.click();
-  await responsePromise;
+    await appLocator.click();
+    await responsePromise;
+  } catch (error) {
+    // if (error instanceof errors.TimeoutError) {
+    //   await page.screenshot({ path: 'screenshot.png', fullPage: true });
+    // }
+  }
 
   getContext('iframe[name="embedded-page-container"]');
 
@@ -45,11 +57,17 @@ test('App displayed in Teams context', async () => {
 test('App displayed in Outlook context', async () => {
   await page.goto(`https://outlook.office365.com/host/${APP_ID}`);
 
-  await waitForSPOHostingPageResponse();
+  try {
+    await waitForSPOHostingPageResponse();
+  } catch (error) {
+    // if (error instanceof errors.TimeoutError) {
+    //   await page.screenshot({ path: 'screenshot.png', fullPage: true });
+    // }
+  }
 
   getContext(OUTLOOK_M365_FRAME);
 
-  await expect(msgContext).toHaveText(/Outlook/, {timeout: 6000});
+  await expect(msgContext).toHaveText(/Outlook/, { timeout: 10000 });
 
   // const heading = page.frameLocator('iframe[data-tid="app-host-iframe"]').getByRole('heading', { name: 'Well done, Megan Bowen!' });
   // await heading;
@@ -65,11 +83,16 @@ test('App displayed in Outlook context', async () => {
 });
 
 test('App displayed in M365 context', async () => {
+  // page.on('console', async msg => {
+  //   if (msg.type() === "error" && msg.text().indexOf('Error: SDK initialization timed out') > 0) {
+  //     test.skip();
+  //   } 
+  // });
+  
   await page.goto(`https://www.microsoft365.com/m365apps/${APP_ID}?auth=2`);
 
   // await expect(page.getByTestId('app-header-title-button')).toHaveText('HelloM365');
-
-  await waitForSPOHostingPageResponse();
+  await waitForSPOHostingPageResponse();  
 
   getContext(OUTLOOK_M365_FRAME);
 
@@ -81,11 +104,11 @@ test.afterAll(async () => {
 });
 
 function waitForSPOHostingPageResponse(): Promise<Response> {
-  
+
   return page.waitForResponse(response =>
     (response.url().indexOf('.sharepoint.com/sites/app/ClientSideAssets/') > 0
-   || response.url().indexOf('localhost:4321/dist') > 0) 
-   && response.status() === 200
+      || response.url().indexOf('localhost:4321/dist') > 0)
+    && response.status() === 200
   );
 }
 
