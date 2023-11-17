@@ -33,8 +33,11 @@ test('App displayed in Teams context', async () => {
 
   // If you have a policy that addds automatically the custom app as pinned 👇
   try {
-    const appLocator = page.locator(`[data-tid="app-bar-${APP_ID}"]`);
+    await page.locator('#apps-button').click();
+    const appLocator = page.locator(`[apps-drag-data-id="${APP_ID}"]`);
+    // const appLocator = page.locator(`[data-tid="app-bar-${APP_ID}"]`);
     const responsePromise = waitForSPOHostingPageResponse();
+    // await page.goto('https://teams.microsoft.com/apps/3934c2bd-b5db-49a1-922d-427b51ee6823');
 
     await appLocator.click();
     await responsePromise;

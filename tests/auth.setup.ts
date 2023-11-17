@@ -23,7 +23,7 @@ setup('authenticate', async ({ page, context }) => {
     // await page.goto('https://microsoft365.com/?auth=2');
     // await expect(page.getByRole('heading', { name: 'Welcome to Microsoft 365' })).toBeVisible({timeout: 20000});
 
-    await page.context().storageState({ path: process.env.CI ? "storage.json" : authFile });
+    await page.context().storageState({ path: process.env.CI ? 'storage.json' : authFile });
   }
   else {
     throw new Error('M365_LOGIN and M365_PWD environment variables must be set');
