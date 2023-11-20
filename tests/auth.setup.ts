@@ -15,10 +15,10 @@ setup('authenticate', async ({ page, context }) => {
     const validate = page.locator('#idSIButton9');
     await validate.click();
     await page.locator('#i0118').fill(pwd);
-    // const loginResponse = page.waitForResponse("https://login.microsoftonline.com/common/login");
-    // const loginResponse = page.waitForResponse("https://login.live.com/Me.htm?v=3");
     await validate.click();
-    // await loginResponse;
+
+    // 👇 Test can be made to be sure auth is successful
+    // await page.waitForResponse("https://login.microsoftonline.com/common/login");
     // await validate.click();
     // await page.goto('https://microsoft365.com/?auth=2');
     // await expect(page.getByRole('heading', { name: 'Welcome to Microsoft 365' })).toBeVisible({timeout: 20000});
