@@ -6,6 +6,8 @@ import { defineConfig, devices } from '@playwright/test';
  */
 require('dotenv').config();
 
+const storageLocation = process.env.CI ? 'storage.json' : 'playwright/.auth/user.json';
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -40,7 +42,7 @@ export default defineConfig({
       name: 'chromium',
       use: {
         ...devices['Desktop Chrome'],
-        storageState: process.env.CI ? 'storage.json' : 'playwright/.auth/user.json',
+        storageState: storageLocation,
       },
       dependencies: ['setup'],
     },
@@ -48,7 +50,8 @@ export default defineConfig({
     {
       name: 'firefox',
       use: {
-        ...devices['Desktop Firefox']
+        ...devices['Desktop Firefox'],
+        storageState: storageLocation
       },
     },
 
