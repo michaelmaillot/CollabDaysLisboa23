@@ -18,28 +18,14 @@ jobs:
     - name: Install Playwright Browsers
       run: npx playwright install --with-deps
     - name: Run Playwright tests
-      run: npx playwright test --project chromium
+      run: npx playwright test
       env:
         CI: true
         M365_LOGIN: ${{ secrets.M365_LOGIN }}
         M365_PWD: ${{ secrets.M365_PWD }}
-        PLAYWRIGHT_SERVICE_ACCESS_TOKEN: ${{ secrets.PLAYWRIGHT_SERVICE_ACCESS_TOKEN }}
-        PLAYWRIGHT_SERVICE_URL: ${{ secrets.PLAYWRIGHT_SERVICE_URL }}
-        PLAYWRIGHT_SERVICE_RUN_ID: ${{ github.run_id }}-${{ github.run_attempt }}-${{ github.sha }}
     - uses: actions/upload-artifact@v3
       if: always()
       with:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
-    - name: Upload HTML report to Azure
-      shell: bash
-      run: |
-        REPORT_DIR='run-${{ github.run_id }}-${{ github.run_attempt }}'
-        azcopy cp --recursive "./playwright-report/*" "https://saplaywrightcollabdays.blob.core.windows.net/\$web/$REPORT_DIR"
-        echo "::notice title=HTML report url::https://<STORAGE_ACCOUsaplaywrightcollabdays.z1.web.core.windows.net/$REPORT_DIR/index.html"
-      env:
-        AZCOPY_AUTO_LOGIN_TYPE: SPN
-        AZCOPY_SPA_APPLICATION_ID: '${{ secrets.AZCOPY_SPA_APPLICATION_ID }}'
-        AZCOPY_SPA_CLIENT_SECRET: '${{ secrets.AZCOPY_SPA_CLIENT_SECRET }}'
-        AZCOPY_TENANT_ID: '${{ secrets.AZCOPY_TENANT_ID }}'

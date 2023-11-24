@@ -31,7 +31,6 @@
   "include": [
     "src/**/*.ts",
     "src/**/*.tsx",
-    "tests/**/*.spec.ts",
   ],
-  "exclude": ["**/*.spec.ts", "*.config.ts"]
+  "exclude": ["tests/**/*.spec.ts", "**/*.spec.ts", "*.config.ts"]
 }

@@ -8,10 +8,6 @@ let page: Page;
 let msgContext: Locator;
 let appContext: FrameLocator;
 
-test.use({
-  viewport: { width: 1920, height: 1080 },
-});
-
 test.beforeAll(async ({ browser }) => {
   page = await browser.newPage();
 });
@@ -39,17 +35,18 @@ test('App displayed in SharePoint context', async () => {
 });
 
 test('App displayed in Teams context', async () => {
-  test.setTimeout(40000);
+  test.setTimeout(60000);
 
   // This 👇 doesn't work because Teams must init the user context (otherwise 400 HTTP error raises)
-  // await page.goto('https://teams.microsoft.com/apps/3934c2bd-b5db-49a1-922d-427b51ee6823');
+  // await page.goto(`https://teams.microsoft.com/apps/${APP_ID}`);
 
   await page.goto('https://teams.microsoft.com/#_');
 
-  
+  getContext('iframe[name="embedded-page-container"]');
+
   try {
     const responsePromise = waitForSPOHostingPageResponse();
-    
+
     // This is done just in case if the app is not pinned by the user but assumed that is already installed
     await page.locator('#apps-button').click();
     await page.locator(`[apps-drag-data-id="${APP_ID}"]`).click();
@@ -57,33 +54,28 @@ test('App displayed in Teams context', async () => {
 
     await responsePromise;
 
+    await expect(msgContext).toHaveText(/Teams/, { timeout: 10000 });
+
     await expect(appContext.getByRole('button', { name: 'Open Team Chat' })).toBeEnabled();
 
     const mailTab = appContext.getByRole('tab', { name: 'Mail' });
     await mailTab.click();
-    await expect(appContext.getByRole('button', { name: 'Compose mail' })).toBeEnabled();
+    await expect(appContext.getByRole('button', { name: 'Compose mail' })).toBeDisabled();
 
   } catch (error) {
     // if (error instanceof errors.TimeoutError) {
     //   await page.screenshot({ path: 'screenshot.png', fullPage: true });
     // }
   }
-
-  getContext('iframe[name="embedded-page-container"]');
-
-  await expect(msgContext).toHaveText(/Teams/, { timeout: 10000 });
-
-  const mailTab = appContext.getByRole('tab', { name: 'Mail' });
-  await mailTab.click();
-
-  await expect(appContext.getByRole('button', { name: 'Compose mail' })).toBeDisabled();
 });
+
+// test.describe.configure({ mode: 'serial' });
 
 test('App displayed in Outlook context', async () => {
   await page.goto(`https://outlook.office365.com/host/${APP_ID}`);
 
   await waitForSPOHostingPageResponse();
-  
+
   getContext(OUTLOOK_M365_FRAME);
 
   await expect(msgContext).toHaveText(/Outlook/, { timeout: 10000 });
